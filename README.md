@@ -1,4 +1,4 @@
-directives-ngmask
+Directives by Douglas Lira
 =================
 
-ngmask
+This repository is some of my work with AngularJS.
