@@ -1,8 +1,8 @@
 /**
-* ngMask
+* ngSpinner
 *
 * @author Douglas Lira <douglas.lira.web@gmail.com>
-* @url https://github.com/douglaslira/directives/ngmask/
+* @url https://github.com/douglaslira/directives/ngspinner/
 */
 
 $app = angular.module("App",[]);
@@ -151,35 +151,63 @@ $app.factory('maskCheck', function() {
 	return maskID;
 });
 
-$app.directive('ngMask',['maskCheck', function(maskCheck) {
+$app.directive('ngSpinner',['maskCheck', function(maskCheck) {
+
+	var tmpl = [
+	'<a href="javascript:void(0);" style="text-decoration:none" ng-click="spinnerInc();"><b>&nbsp;+&nbsp;</b></a>',
+	'<input type="text" ng-keyup="update($event);" ng-model="ngModel">',
+	'<a href="javascript:void(0);" style="text-decoration:none" ng-click="spinnerDec();"><b>&nbsp;-&nbsp;</b></a>',
+	]
 
 	return {
-		restrict: 'A',
+		restrict: 'E',
 		scope: {
-			ngModel: '=',
-			mask: '@',
-			valueMax: '@'
+			ngModel: "=",
+			spinnerMax: "@",
+			spinnerMin: "@"
 		},
+		template: tmpl.join(""),
 		link: function(scope, elem, attrs) {
-			var newMask = (!scope.mask ? '[#]' : scope.mask);
-			var newCheck = (!scope.valueMax ? "" : parseFloat(scope.valueMax.replace('.','').replace(',','')));
-			scope.ngModel = maskCheck.new(newMask, scope.ngModel.replace('.',''));
-			if(scope.ngModel) {
-				scope.ngModel = maskCheck.new(newMask, scope.ngModel); 
+			var newValue = 0;
+
+			scope.update = function(e){
+				scope.ngModel = maskCheck.new('[#]', e.currentTarget.value);
+				var newModel = parseInt(scope.ngModel);
+				var newMax = (!scope.spinnerMax ? (newModel + 1) : parseInt(scope.spinnerMax));
+				var newMin = (!scope.spinnerMin ? 0 : parseInt(scope.spinnerMin));
+				if (newModel > newMin && newModel < newMax) {
+					scope.ngModel = newModel;
+					newValue = parseInt(scope.ngModel);
+				} else if(newModel < newMin) {
+					scope.ngModel = newMin;
+					newValue = newMin;
+				} else if(newModel > newMax) {
+					scope.ngModel = newMax;
+					newValue = newMax;
+				}
 			}
-			elem.bind("keyup", function() {
-				scope.$apply(function() {
-					scope.ngModel = maskCheck.new(newMask, scope.ngModel);
-					var newValue = parseFloat(scope.ngModel.replace('.','').replace(',',''));
-					if(newCheck) {
-						if(newValue > newCheck){
-							scope.ngModel = maskCheck.new(newMask, scope.valueMax);
-						}
-					} else {
-						scope.ngModel = maskCheck.new(newMask, scope.ngModel);
-					}
-				});
-			});
+
+			scope.spinnerInc = function() {
+				var newModel = parseInt(scope.ngModel);
+				var newMax = (!scope.spinnerMax ? (newModel + 1) : parseInt(scope.spinnerMax));
+				var newMin = (!scope.spinnerMin ? 0 : parseInt(scope.spinnerMin));
+				if(newModel < newMax && newMax != 0){
+					scope.ngModel = ++newValue;
+				} else if(newMax == 0) {
+					scope.ngModel = ++newValue;
+				}
+			};
+			scope.spinnerDec = function() {
+				var newModel = parseInt(scope.ngModel);
+				var newMax = (!scope.spinnerMax ? (newModel + 1) : parseInt(scope.spinnerMax));
+				var newMin = (!scope.spinnerMin ? 0 : parseInt(scope.spinnerMin));
+				if(newModel > newMin && newMin != 0){
+					scope.ngModel = --newValue;
+				} else if(newMin == 0 && newValue != newMin) {
+					scope.ngModel = --newValue;
+				}
+			};
+
 		}
 	}
 }]);
