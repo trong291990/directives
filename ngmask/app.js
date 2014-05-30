@@ -18,8 +18,6 @@ $app.factory('maskCheck', function() {
 				}
 			}
 
-			// Aqui foi um pulo do gato que achei pra validar
-			// telefones com nove dígitos!!
 			if(m == '## ####-####|## #####-####'){
 				if(v.length>12){
 					return maskID.new('## #####-####', v);
@@ -30,18 +28,18 @@ $app.factory('maskCheck', function() {
 
 			var tv = "";
 			var ret = "";
-			var caracter = "#";
-			var separador = "|";
-			var mascara_utilizar = "";
+			var character = "#";
+			var separator = "|";
+			var maskUse = "";
 			v = maskID.empty(v);
 			if (v == ""){
 				return v
 			};
-			var temp = m.split(separador);
+			var temp = m.split(separator);
 			var dif = 1000;
 
 			var vm = v;
-		    //tirando mascara do valor já existente
+		    // removing the mask value existing
 		    for (var i = 0; i < v.length;i++){
 		    	if (!isNaN(v.substr(i,1))){
 		    		tv = tv + v.substr(i,1);
@@ -50,7 +48,7 @@ $app.factory('maskCheck', function() {
 
 		    v = tv;
 
-			//formatar mascara dinamica
+			// dynamic format mask
 			for (i = 0; i<temp.length;i++){
 				var mult = "";
 				var validar = 0;
@@ -67,66 +65,66 @@ $app.factory('maskCheck', function() {
 				}
 			}
 
-			//verificar qual mascara utilizar
+			// check which masks use
 			if (temp.length == 1){
-				mascara_utilizar = temp[0];
+				maskUse = temp[0];
 				var mascara_limpa = "";
-				for (var j=0;j<mascara_utilizar.length;j++){
-					if (mascara_utilizar.substr(j,1) == caracter){
-						mascara_limpa = mascara_limpa + caracter;
+				for (var j=0;j<maskUse.length;j++){
+					if (maskUse.substr(j,1) == character){
+						mascara_limpa = mascara_limpa + character;
 					}
 				}
 				var tam = mascara_limpa.length;
 			}else{
-				//limpar caracteres diferente do caracter da máscara
+				// clean different characters of the character of the mask
 				for (i=0;i<temp.length;i++){
 					var mascara_limpa = "";
 					for (var j=0;j<temp[i].length;j++){
-						if (temp[i].substr(j,1) == caracter){
-							mascara_limpa = mascara_limpa + caracter;
+						if (temp[i].substr(j,1) == character){
+							mascara_limpa = mascara_limpa + character;
 						}
 					}
 					if (v.length > mascara_limpa.length){
 						if (dif > (v.length - mascara_limpa.length)){
 							dif = v.length - mascara_limpa.length;
-							mascara_utilizar = temp[i];
+							maskUse = temp[i];
 							tam = mascara_limpa.length;
 						}
 					}else if (v.length < mascara_limpa.length){
 						if (dif > (mascara_limpa.length - v.length)){
 							dif = mascara_limpa.length - v.length;
-							mascara_utilizar = temp[i];
+							maskUse = temp[i];
 							tam = mascara_limpa.length;
 						}
 					}else{
-						mascara_utilizar = temp[i];
+						maskUse = temp[i];
 						tam = mascara_limpa.length;
 						break;
 					}
 				}
 			}
 
-			//validar tamanho da mascara de acordo com o tamanho do valor
+			// validating mask size according to the size of the value
 			if (v.length > tam){
 				v = v.substr(0,tam);
 			}else if (v.length < tam){
 				var masct = "";
 				var j = v.length;
-				for (var i = mascara_utilizar.length-1;i>=0;i--){
+				for (var i = maskUse.length-1;i>=0;i--){
 					if (j == 0) break;
-					if (mascara_utilizar.substr(i,1) == caracter){
+					if (maskUse.substr(i,1) == character){
 						j--;
 					}
-					masct = mascara_utilizar.substr(i,1) + masct;
+					masct = maskUse.substr(i,1) + masct;
 				}
-				mascara_utilizar = masct;
+				maskUse = masct;
 			}
 
-			//mascarar
-			j = mascara_utilizar.length -1;
+			// Apply mask
+			j = maskUse.length -1;
 			for (var i = v.length - 1;i>=0;i--){
-				if (mascara_utilizar.substr(j,1) != caracter){
-					ret = mascara_utilizar.substr(j,1) + ret;
+				if (maskUse.substr(j,1) != character){
+					ret = maskUse.substr(j,1) + ret;
 					j--;
 				}
 				ret = v.substr(i,1) + ret;
