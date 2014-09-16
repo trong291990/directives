@@ -49,7 +49,7 @@ $app.factory('maskCheck', function() {
 		    v = tv;
 
 			// dynamic format mask
-			for (i = 0; i<temp.length;i++){
+			for (var i = 0; i<temp.length;i++){
 				var mult = "";
 				var validate = 0;
 				for (var j=0;j<temp[i].length;j++){
@@ -77,7 +77,7 @@ $app.factory('maskCheck', function() {
 				var tam = cleanMask.length;
 			}else{
 				// clean different characters of the character of the mask
-				for (i=0;i<temp.length;i++){
+				for (var i=0;i<temp.length;i++){
 					var cleanMask = "";
 					for (var j=0;j<temp[i].length;j++){
 						if (temp[i].substr(j,1) == character){
