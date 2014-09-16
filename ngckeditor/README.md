@@ -1,4 +1,4 @@
-NGMask By Douglas Lira
+NGCKeditor By Douglas Lira
 =================
 
 This directive was created to apply ckeditor on textarea
